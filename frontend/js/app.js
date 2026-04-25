@@ -109,6 +109,11 @@ async function checkAuth() {
 }
 
 function handleLoginSuccess(data) {
+  if (!data || !data.token) {
+    console.error('Invalid login data received:', data);
+    showToast('Login failed: Invalid server response', 'error');
+    return;
+  }
   api.setToken(data.token);
   state.user = data.user;
   state.isAuthenticated = true;

@@ -68,7 +68,19 @@ const createApiClient = () => {
           localStorage.removeItem('st_user');
           window.dispatchEvent(new CustomEvent('auth:logout'));
         }
-        throw new Error(jsonData?.message || `Request failed with status ${response.status}`);
+        
+        let errorMessage = `Request failed with status ${response.status}`;
+        if (jsonData && jsonData.message) {
+          errorMessage = jsonData.message;
+        } else if (jsonData && jsonData.errors && Array.isArray(jsonData.errors)) {
+          errorMessage = jsonData.errors[0].msg || jsonData.errors[0].message;
+        }
+        
+        throw new Error(errorMessage);
+      }
+
+      if (jsonData === null) {
+        throw new Error(`The server returned an invalid response (not JSON). Status: ${response.status}`);
       }
 
       return jsonData;

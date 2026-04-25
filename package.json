@@ -1,0 +1,18 @@
+{
+  "name": "smart-timetable",
+  "version": "1.0.0",
+  "description": "Smart Timetable Generator - Full Stack Application",
+  "private": true,
+  "scripts": {
+    "install-backend": "cd backend && npm install",
+    "postinstall": "npm run install-backend",
+    "start": "cd backend && npm start",
+    "dev": "cd backend && npm run dev",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "author": "SmartTable AI Team",
+  "license": "MIT"
+}

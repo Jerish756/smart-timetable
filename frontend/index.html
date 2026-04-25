@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>SmartTable AI — Intelligent Timetable Generator</title>
+  <meta name="description" content="SmartTable AI generates optimized, conflict-free student schedules using intelligent algorithms. Plan around your real day." />
+  <meta name="keywords" content="timetable, schedule, student, AI, smart, generator" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="css/main.css" />
+  <link rel="stylesheet" href="css/components.css" />
+  <link rel="stylesheet" href="css/pages.css" />
+  <link rel="stylesheet" href="css/responsive.css" />
+</head>
+<body>
+  <!-- ═══ App Shell ═══ -->
+  <div id="app" class="app">
+    <!-- Sidebar -->
+    <aside id="sidebar" class="sidebar">
+      <div class="sidebar-brand">
+        <div class="brand-icon">
+          <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+            <path d="M14 2L2 8l12 6 12-6-12-6z" fill="url(#grad1)" />
+            <path d="M2 20l12 6 12-6" stroke="url(#grad1)" stroke-width="2" fill="none" />
+            <path d="M2 14l12 6 12-6" stroke="url(#grad1)" stroke-width="2" fill="none" />
+            <defs>
+              <linearGradient id="grad1" x1="0" y1="0" x2="28" y2="28">
+                <stop stop-color="#7C3AED" />
+                <stop offset="1" stop-color="#3B82F6" />
+              </linearGradient>
+            </defs>
+          </svg>
+        </div>
+        <div class="brand-text">
+          <span class="brand-name">SmartTable AI</span>
+          <span class="brand-tagline">INTELLECTUAL FLOW</span>
+        </div>
+      </div>
+
+      <button id="btn-new-session" class="sidebar-cta">
+        <span class="cta-icon">+</span>
+        New Study Session
+      </button>
+
+      <nav class="sidebar-nav">
+        <a href="#" class="nav-item active" data-page="dashboard" id="nav-dashboard">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+          <span>Dashboard</span>
+        </a>
+        <a href="#" class="nav-item" data-page="generate" id="nav-generate">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2l3 7h7l-5.5 4.5L18 21l-6-4.5L6 21l1.5-7.5L2 9h7z"/></svg>
+          <span>Generate</span>
+        </a>
+        <a href="#" class="nav-item" data-page="schedule" id="nav-schedule">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+          <span>My Schedule</span>
+        </a>
+        <a href="#" class="nav-item" data-page="analytics" id="nav-analytics">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22,12 18,12 15,21 9,3 6,12 2,12"/></svg>
+          <span>Analytics</span>
+        </a>
+        <a href="#" class="nav-item" data-page="settings" id="nav-settings">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83-2.83l.06-.06A1.65 1.65 0 0 0 4.68 15a1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 2.83-2.83l.06.06A1.65 1.65 0 0 0 9 4.68a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 2.83l-.06.06A1.65 1.65 0 0 0 19.4 9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+          <span>Settings</span>
+        </a>
+      </nav>
+
+      <div class="sidebar-footer">
+        <a href="#" class="nav-item" id="nav-support">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 0 1 5.83 1c0 2-3 3-3 3"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+          <span>Support</span>
+        </a>
+        <a href="#" class="nav-item" id="nav-logout">
+          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+          <span>Logout</span>
+        </a>
+      </div>
+    </aside>
+
+    <!-- Main Content Area -->
+    <main id="main-content" class="main-content">
+      <!-- Top Navigation -->
+      <header id="topbar" class="topbar">
+        <button id="mobile-menu-btn" class="mobile-menu-btn">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="3" y1="12" x2="21" y2="12"/><line x1="3" y1="6" x2="21" y2="6"/><line x1="3" y1="18" x2="21" y2="18"/></svg>
+        </button>
+        <nav class="topbar-nav">
+          <a href="#" class="topbar-link active" data-page="dashboard">Dashboard</a>
+          <a href="#" class="topbar-link" data-page="generate">Generate</a>
+          <a href="#" class="topbar-link" data-page="schedule">My Schedule</a>
+          <a href="#" class="topbar-link" data-page="analytics">Analytics</a>
+          <a href="#" class="topbar-link" data-page="settings">Settings</a>
+        </nav>
+        <div class="topbar-actions">
+          <button id="btn-theme-toggle" class="topbar-icon-btn" aria-label="Toggle theme">
+            <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+            <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+          </button>
+          <button id="btn-logout-top" class="btn btn-accent btn-sm">Logout</button>
+          <div id="user-avatar" class="user-avatar">
+            <span id="user-initials">JD</span>
+          </div>
+        </div>
+      </header>
+
+      <!-- Page Container -->
+      <div id="page-container" class="page-container">
+        <!-- Pages will be rendered here by JavaScript -->
+      </div>
+
+      <!-- Footer -->
+      <footer class="app-footer">
+        <div class="footer-left">
+          <span class="footer-brand">SmartTable AI</span>
+          <span class="footer-copy">&copy; 2024 SmartTable AI. Designed for Intellectual Flow.</span>
+        </div>
+        <div class="footer-links">
+          <a href="#">Privacy Policy</a>
+          <a href="#">Terms of Service</a>
+          <a href="#">Contact Support</a>
+        </div>
+      </footer>
+    </main>
+  </div>
+
+  <!-- ═══ Landing Page (Shown first when not logged in) ═══ -->
+  <div id="landing-page" class="home-page" style="display: none; padding: 40px; max-width: 1200px; margin: 0 auto; height: 100vh; overflow-y: auto;">
+    <div class="hero-section animate-in stagger-1">
+      <div class="hero-badge">⚡ INTELLECTUAL FLOW</div>
+      <h1 class="hero-title">Plan around your real day.</h1>
+      <p class="hero-description">SmartTable AI syncs with your life to find the perfect intellectual flow states for your growth. Experience the future of automated, conflict-free scheduling.</p>
+      <div class="hero-actions">
+        <button id="btn-landing-start" class="btn btn-primary btn-lg">Get Started</button>
+        <button id="btn-landing-login" class="btn btn-outline btn-lg" style="border: 1px solid var(--border-primary); color: var(--text-primary); background: var(--bg-card);">Log In</button>
+      </div>
+    </div>
+    
+    <div class="features-section animate-in stagger-2">
+      <h2 class="features-title">Intelligent Scheduling</h2>
+      <p class="features-subtitle">Let the algorithm find the best time for your focus.</p>
+      <div class="features-grid">
+        <div class="feature-card">
+          <div class="feature-icon">🧠</div>
+          <h3>AI-Powered Optimization</h3>
+          <p>Our constraint-satisfaction algorithm ensures you get the optimal study schedule without any conflicts.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-badge">NEW</div>
+          <div class="feature-icon">⚡</div>
+          <h3>Smart Flow States</h3>
+          <p>Align study sessions with your natural energy peaks, whether you're an early bird or a night owl.</p>
+        </div>
+        <div class="feature-card">
+          <div class="feature-icon">☕</div>
+          <h3>Active Break Integration</h3>
+          <p>Scientifically-backed break durations are automatically scheduled to keep your mind sharp.</p>
+        </div>
+      </div>
+    </div>
+    
+    <div class="cta-section animate-in stagger-3">
+      <h2>Ready to optimize your time?</h2>
+      <div class="cta-buttons">
+        <button id="btn-landing-join" class="btn btn-white btn-lg">Join 10,000+ Students</button>
+      </div>
+      <div class="cta-sub">No credit card required</div>
+    </div>
+  </div>
+
+  <!-- ═══ Auth Page (Shown when not logged in) ═══ -->
+  <div id="auth-page" class="auth-page" style="display: none;">
+    <div class="auth-container">
+      <div class="auth-left">
+        <div class="auth-branding">
+          <div class="auth-logo">
+            <svg width="40" height="40" viewBox="0 0 28 28" fill="none">
+              <path d="M14 2L2 8l12 6 12-6-12-6z" fill="url(#grad2)" />
+              <path d="M2 20l12 6 12-6" stroke="url(#grad2)" stroke-width="2" fill="none" />
+              <path d="M2 14l12 6 12-6" stroke="url(#grad2)" stroke-width="2" fill="none" />
+              <defs>
+                <linearGradient id="grad2" x1="0" y1="0" x2="28" y2="28">
+                  <stop stop-color="#7C3AED" />
+                  <stop offset="1" stop-color="#3B82F6" />
+                </linearGradient>
+              </defs>
+            </svg>
+            <h1>SmartTable AI</h1>
+          </div>
+          <h2 class="auth-headline">Study schedules,<br /><span class="gradient-text">simplified.</span></h2>
+          <p class="auth-description">SmartTable AI is a clean and intelligent planner designed to automate your learning journey. Experience the flow of high-performance study sessions.</p>
+          <div class="auth-features">
+            <div class="auth-feature">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>AI-powered schedule optimization</span>
+            </div>
+            <div class="auth-feature">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Conflict-free timetable generation</span>
+            </div>
+            <div class="auth-feature">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+              <span>Smart break scheduling</span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="auth-right">
+        <div class="auth-form-wrapper">
+          <div class="auth-tabs">
+            <button class="auth-tab active" data-tab="login" id="tab-login">Sign In</button>
+            <button class="auth-tab" data-tab="register" id="tab-register">Create Account</button>
+          </div>
+
+          <!-- Login Form -->
+          <form id="login-form" class="auth-form">
+            <h3>Welcome back</h3>
+            <p class="auth-subtitle">Enter your credentials to access your dashboard</p>
+            <div class="form-group">
+              <label for="login-email">Email Address</label>
+              <input type="email" id="login-email" placeholder="you@university.edu" required />
+            </div>
+            <div class="form-group">
+              <label for="login-password">Password</label>
+              <input type="password" id="login-password" placeholder="••••••••" required minlength="6" />
+            </div>
+            <div id="login-error" class="form-error" style="display:none;"></div>
+            <button type="submit" class="btn btn-primary btn-full" id="btn-login">
+              <span class="btn-text">Sign In</span>
+              <span class="btn-loader" style="display:none;"></span>
+            </button>
+          </form>
+
+          <!-- Register Form -->
+          <form id="register-form" class="auth-form" style="display:none;">
+            <h3>Create your account</h3>
+            <p class="auth-subtitle">Join SmartTable AI and start optimizing your schedule</p>
+            <div class="form-group">
+              <label for="register-name">Full Name</label>
+              <input type="text" id="register-name" placeholder="Jerish" required />
+            </div>
+            <div class="form-group">
+              <label for="register-email">Email Address</label>
+              <input type="email" id="register-email" placeholder="you@university.edu" required />
+            </div>
+            <div class="form-group">
+              <label for="register-password">Password</label>
+              <input type="password" id="register-password" placeholder="Min. 6 characters" required minlength="6" />
+            </div>
+            <div id="register-error" class="form-error" style="display:none;"></div>
+            <button type="submit" class="btn btn-primary btn-full" id="btn-register">
+              <span class="btn-text">Create Account</span>
+              <span class="btn-loader" style="display:none;"></span>
+            </button>
+          </form>
+
+          <p class="auth-footer-text">
+            NO CREDIT CARD REQUIRED • JOIN 10,000+ STUDENTS
+          </p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Toast Notifications -->
+  <div id="toast-container" class="toast-container"></div>
+
+  <!-- Modal Overlay -->
+  <div id="modal-overlay" class="modal-overlay" style="display:none;">
+    <div id="modal-content" class="modal-content"></div>
+  </div>
+
+  <!-- Scripts (ES6 Modules) -->
+  <script type="module" src="js/app.js"></script>
+</body>
+</html>

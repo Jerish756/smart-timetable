@@ -1,0 +1,313 @@
+/* ═══════════════════════════════════════════════════════════
+   SmartTable AI — Responsive Breakpoints
+   Mobile-first responsive design
+   ═══════════════════════════════════════════════════════════ */
+
+/* ── Tablet (≤1024px) ── */
+@media (max-width: 1024px) {
+  .main-content {
+    margin-left: 0;
+  }
+
+  .sidebar {
+    transform: translateX(-100%);
+    box-shadow: var(--shadow-xl);
+  }
+
+  .sidebar.open {
+    transform: translateX(0);
+  }
+
+  .topbar {
+    left: 0;
+  }
+
+  .mobile-menu-btn {
+    display: flex;
+  }
+
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-bottom {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .generate-content {
+    grid-template-columns: 1fr;
+  }
+
+  .schedule-main {
+    grid-template-columns: 1fr;
+  }
+
+  .analytics-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .analytics-bottom {
+    grid-template-columns: 1fr;
+  }
+
+  .features-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .auth-container {
+    grid-template-columns: 1fr;
+  }
+
+  .auth-left {
+    display: none;
+  }
+
+  .hero-title {
+    font-size: 2.2rem;
+  }
+}
+
+/* ── Mobile (≤768px) ── */
+@media (max-width: 768px) {
+  :root {
+    --space-xl: 20px;
+    --space-2xl: 32px;
+    --space-3xl: 48px;
+  }
+
+  .page-container {
+    padding: var(--space-md);
+    padding-top: calc(var(--topbar-height) + var(--space-md));
+  }
+
+  .topbar-nav {
+    display: none;
+  }
+
+  .dashboard-welcome {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: var(--space-md);
+  }
+
+  .welcome-time {
+    text-align: left;
+  }
+
+  .dashboard-bottom {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-stats-side {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .busy-times {
+    grid-template-columns: 1fr;
+  }
+
+  .routine-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .best-time-options {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .schedule-toolbar {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .schedule-toolbar-left,
+  .schedule-toolbar-right {
+    justify-content: center;
+  }
+
+  .features-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-title {
+    font-size: 1.8rem;
+  }
+
+  .hero-actions {
+    flex-direction: column;
+  }
+
+  .cta-section {
+    padding: var(--space-2xl) var(--space-lg);
+  }
+
+  .cta-section h2 {
+    font-size: 1.5rem;
+  }
+
+  .cta-buttons {
+    flex-direction: column;
+  }
+
+  .page-header h1 {
+    font-size: 1.5rem;
+  }
+
+  .performance-value {
+    font-size: 2rem;
+  }
+
+  .welcome-text h1 {
+    font-size: 1.5rem;
+  }
+
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  .course-form-grid {
+    grid-template-columns: 1fr;
+  }
+
+  /* Timetable Grid - horizontal scroll */
+  .timetable-grid {
+    overflow-x: auto;
+    min-width: 700px;
+  }
+
+  .timetable-wrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .app-footer {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .footer-left {
+    flex-direction: column;
+  }
+
+  .footer-links {
+    justify-content: center;
+  }
+
+  .modal-content {
+    width: 95%;
+    padding: var(--space-lg);
+  }
+
+  .auth-right {
+    padding: var(--space-xl);
+  }
+
+  .auth-headline {
+    font-size: 2rem;
+  }
+
+  .subject-input-row {
+    grid-template-columns: 1fr;
+  }
+
+  .metrics-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+}
+
+/* ── Small Mobile (≤480px) ── */
+@media (max-width: 480px) {
+  .page-header h1 {
+    font-size: 1.3rem;
+  }
+
+  .welcome-text h1 {
+    font-size: 1.3rem;
+  }
+
+  .welcome-clock {
+    font-size: 1.5rem;
+  }
+
+  .hero-title {
+    font-size: 1.5rem;
+  }
+
+  .dashboard-stats-side {
+    grid-template-columns: 1fr;
+  }
+
+  .topbar-actions {
+    gap: var(--space-sm);
+  }
+
+  .btn-logout-top {
+    display: none;
+  }
+
+  .pomodoro-ring {
+    width: 140px;
+    height: 140px;
+  }
+
+  .pomodoro-time {
+    font-size: 2rem;
+  }
+}
+
+/* ── Print Styles ── */
+@media print {
+  .sidebar,
+  .topbar,
+  .app-footer,
+  .btn,
+  .fab {
+    display: none !important;
+  }
+
+  .main-content {
+    margin-left: 0 !important;
+  }
+
+  .page-container {
+    padding: 0;
+  }
+
+  body {
+    background: white;
+    color: black;
+  }
+
+  .timetable-grid {
+    border: 1px solid #ccc;
+  }
+
+  .timetable-slot {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+}
+
+/* ── Overlay when sidebar is open on mobile ── */
+.sidebar-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 99;
+}
+
+.sidebar-overlay.active {
+  display: block;
+}
+
+/* ── Reduced Motion ── */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

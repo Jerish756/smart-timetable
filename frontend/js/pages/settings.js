@@ -99,18 +99,6 @@ export async function renderSettings(container, state) {
             </label>
           </div>
         </div>
-        <div class="settings-row">
-          <div class="setting-info">
-            <div class="setting-label">Free Fridays</div>
-            <div class="setting-desc">Keep Fridays clear of any sessions</div>
-          </div>
-          <div class="setting-control">
-            <label class="toggle">
-              <input type="checkbox" id="setting-free-friday" ${prefs.freeFridays ? 'checked' : ''} />
-              <span class="toggle-slider"></span>
-            </label>
-          </div>
-        </div>
         <div class="form-row" style="margin-top: var(--space-md);">
           <div class="form-group">
             <label for="setting-intensity">Schedule Intensity</label>
@@ -129,6 +117,16 @@ export async function renderSettings(container, state) {
               <option value="60" ${prefs.breakDuration === 60 ? 'selected' : ''}>60 minutes</option>
               <option value="90" ${prefs.breakDuration === 90 ? 'selected' : ''}>90 minutes</option>
             </select>
+          </div>
+        </div>
+        <div class="form-row" style="margin-top: var(--space-md);">
+          <div class="form-group">
+            <label for="setting-wake">Wake Up Time</label>
+            <input type="time" id="setting-wake" value="${prefs.wakeTime || '07:00'}" />
+          </div>
+          <div class="form-group">
+            <label for="setting-sleep">Sleep Time</label>
+            <input type="time" id="setting-sleep" value="${prefs.sleepTime || '22:00'}" />
           </div>
         </div>
         <div class="settings-actions">
@@ -224,9 +222,10 @@ export async function renderSettings(container, state) {
       const preferences = {
         noMorningClasses: $('#setting-no-morning').checked,
         eveningsOnly: $('#setting-evenings').checked,
-        freeFridays: $('#setting-free-friday').checked,
         scheduleIntensity: $('#setting-intensity').value,
         breakDuration: parseInt($('#setting-break').value),
+        wakeTime: $('#setting-wake').value,
+        sleepTime: $('#setting-sleep').value,
       };
       await api.auth.updatePreferences(preferences);
       state.user.preferences = preferences;

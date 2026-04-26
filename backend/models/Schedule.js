@@ -4,7 +4,7 @@ const slotSchema = new mongoose.Schema({
   courseId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'Course',
-    required: true
+    required: false
   },
   courseName: String,
   courseCode: String,
@@ -14,7 +14,7 @@ const slotSchema = new mongoose.Schema({
   color: String,
   day: {
     type: String,
-    enum: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'],
+    enum: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'],
     required: true
   },
   startTime: {
@@ -47,9 +47,10 @@ const scheduleSchema = new mongoose.Schema({
   preferences: {
     noMorningClasses: Boolean,
     eveningsOnly: Boolean,
-    freeFridays: Boolean,
     scheduleIntensity: String,
-    breakDuration: Number
+    breakDuration: Number,
+    wakeTime: String,
+    sleepTime: String
   },
   score: {
     type: Number,

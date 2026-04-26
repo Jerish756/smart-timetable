@@ -9,7 +9,7 @@ const Course = require('../models/Course');
  */
 
 // Time slot configuration
-const DAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'];
+const DAYS = ['monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday', 'sunday'];
 const TIME_SLOTS = [];
 
 // Generate time slots from 07:00 to 21:00 in 30-min increments
@@ -61,11 +61,6 @@ function scoreSlot(day, startMin, endMin, course, existingSlots, preferences) {
   // Penalize non-evening slots if user wants evenings only
   if (preferences.eveningsOnly && startMin < 1020) { // Before 17:00
     score -= 30;
-  }
-
-  // Penalize Friday slots if user wants free Fridays
-  if (preferences.freeFridays && day === 'friday') {
-    score -= 50;
   }
 
   // ── Distribution scoring ──
@@ -178,9 +173,6 @@ function generateOptimizedTimetable(courses, preferences) {
 
       // Determine available days
       let availableDays = [...DAYS];
-      if (preferences.freeFridays) {
-        availableDays = availableDays.filter(d => d !== 'friday');
-      }
 
       for (const day of availableDays) {
         // Try to avoid placing same course on same day (unless compressed)
@@ -188,34 +180,38 @@ function generateOptimizedTimetable(courses, preferences) {
           continue;
         }
 
-        // Determine start time range
-        let minStart = 420; // 07:00
-        let maxStart = 1260 - durationMinutes; // Ensure it ends before 21:00
+        // Determine start time range from preferences
+        const wakeMin = timeToMinutes(preferences.wakeTime || '07:00');
+        const sleepMin = timeToMinutes(preferences.sleepTime || '22:00');
+        
+        let minStart = wakeMin; 
+        let maxStart = sleepMin - durationMinutes; 
 
         if (preferences.noMorningClasses) {
-          minStart = 600; // 10:00
+          minStart = Math.max(minStart, 600); // 10:00
         }
         if (preferences.eveningsOnly) {
-          minStart = 1020; // 17:00
+          minStart = Math.max(minStart, 1020); // 17:00
         }
 
         // Try each 30-minute slot
         for (let startMin = minStart; startMin <= maxStart; startMin += 30) {
           const endMin = startMin + durationMinutes;
 
+          // Check for busy window overlap
+          if (preferences.isBusyDuringDay) {
+            const busyStart = timeToMinutes(preferences.busyFrom || '09:00');
+            const busyEnd = timeToMinutes(preferences.busyTill || '17:00');
+            
+            if (hasOverlap(startMin, endMin, busyStart, busyEnd)) {
+              continue; // Skip this slot as it overlaps with busy hours
+            }
+          }
+
           // Check for conflicts with existing slots
           let conflict = slots.some(s =>
             s.day === day && hasOverlap(startMin, endMin, s.startMinutes, s.endMinutes)
           );
-
-          // Check for conflict with busy time
-          if (!conflict && preferences.isBusyDuringDay && preferences.busyFrom && preferences.busyTill) {
-            const busyStart = timeToMinutes(preferences.busyFrom);
-            const busyEnd = timeToMinutes(preferences.busyTill);
-            if (hasOverlap(startMin, endMin, busyStart, busyEnd)) {
-              conflict = true;
-            }
-          }
 
           if (conflict) continue;
 
@@ -393,7 +389,6 @@ exports.generateSchedule = async (req, res, next) => {
     const preferences = {
       noMorningClasses: reqPreferences?.noMorningClasses ?? user.preferences?.noMorningClasses ?? false,
       eveningsOnly: reqPreferences?.eveningsOnly ?? user.preferences?.eveningsOnly ?? false,
-      freeFridays: reqPreferences?.freeFridays ?? user.preferences?.freeFridays ?? false,
       scheduleIntensity: reqPreferences?.scheduleIntensity ?? user.preferences?.scheduleIntensity ?? 'balanced',
       breakDuration: reqPreferences?.breakDuration ?? user.preferences?.breakDuration ?? 45,
       isBusyDuringDay: reqPreferences?.isBusyDuringDay ?? user.preferences?.isBusyDuringDay ?? false,

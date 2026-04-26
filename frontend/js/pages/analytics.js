@@ -120,32 +120,11 @@ export async function renderAnalytics(container, state) {
       </div>
 
       <!-- Bottom Row -->
-      <div class="analytics-bottom">
-        <!-- Busy Window Alert -->
-        <div class="card analytics-alert-card animate-in stagger-3">
-          <span class="alert-badge" style="position:relative;">ALERT</span>
-          <h2 class="card-title" style="font-size:1.5rem; margin-top:var(--space-sm);">Busy Window</h2>
-          <p style="color:var(--text-secondary);font-size:0.9rem;">
-            ${stats.longestDay ? `You have a high-density collision between 14:00 - 16:30 this ${stats.longestDay}.` : 'No schedule conflicts detected. Great job!'}
-          </p>
-          ${stats.longestDay ? `
-          <div class="alert-overlap">
-            <div class="alert-overlap-icon">⚠️</div>
-            <div>
-              <strong>${stats.totalSessions || 0} Sessions</strong><br/>
-              <span style="font-size:0.8rem;color:var(--text-tertiary);">Schedule Overlap on ${stats.longestDay}</span>
-            </div>
-          </div>` : ''}
-          <button class="btn btn-secondary" style="width:100%;margin-top:var(--space-md);" onclick="window.dispatchEvent(new CustomEvent('navigate',{detail:{page:'schedule'}}))">
-            Optimize Gap
-          </button>
-        </div>
-
+      <div class="analytics-bottom" style="grid-template-columns: 1fr;">
         <!-- Upcoming Exams -->
-        <div class="card animate-in stagger-4">
+        <div class="card animate-in stagger-3">
           <div class="card-header">
             <h2 class="card-title">Upcoming Exams</h2>
-            <a href="#" style="font-size:0.8rem;color:var(--accent-primary);font-weight:600;" onclick="window.dispatchEvent(new CustomEvent('navigate',{detail:{page:'generate'}}));return false;">View Calendar ↗</a>
           </div>
           <div class="exams-list">
             ${exams.length > 0 ? exams.slice(0, 4).map(exam => {

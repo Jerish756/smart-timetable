@@ -72,63 +72,10 @@ export async function renderSchedule(container, state) {
       </div>
 
       <!-- Main Content -->
-      <div class="schedule-main">
+      <div class="schedule-main" style="grid-template-columns: 1fr;">
         <!-- Schedule View -->
         <div id="schedule-view" class="animate-in stagger-2">
-          ${activeSchedule ? renderTodayView(activeSchedule, today) : renderEmptySchedule()}
-        </div>
-
-        <!-- Sidebar -->
-        <div class="schedule-sidebar">
-          <!-- Break Suggestion -->
-          <div class="break-card animate-in stagger-3">
-            <div class="card-subtitle">💡 BREAK SUGGESTION</div>
-            <h3>Your cognitive load is peaking.</h3>
-            <p>Based on your 150m study block, we suggest a 10-minute 'Eye Strain' exercise and a glass of water now.</p>
-            <button class="btn" id="btn-start-break">Start 10m Break</button>
-          </div>
-
-          <!-- Busy Windows -->
-          <div class="card animate-in stagger-4">
-            <div class="card-header">
-              <h2 class="card-title">Busy Windows</h2>
-            </div>
-            <div class="busy-window-list">
-              <div class="busy-item">
-                <span class="busy-dot"></span>
-                <span class="busy-label">Exam Window</span>
-                <span class="busy-time">2:00 PM - 4:00 PM</span>
-              </div>
-              <div class="busy-item">
-                <span class="busy-dot" style="background:var(--warning)"></span>
-                <span class="busy-label">Work Shift</span>
-                <span class="busy-time">5:30 PM - 8:00 PM</span>
-              </div>
-            </div>
-            <div class="ai-insight" style="margin-top: var(--space-md);">
-              "The busiest people have the most time to spare." — Optimized by AI
-            </div>
-          </div>
-
-          <!-- Daily Metrics -->
-          <div class="card animate-in stagger-5">
-            <h2 class="card-title" style="margin-bottom: var(--space-md);">Daily Metrics</h2>
-            <div class="metrics-grid">
-              <div class="metric-item">
-                <div class="metric-label">FOCUS SCORE</div>
-                <div class="metric-value">${activeSchedule ? Math.min(99, activeSchedule.score + 5) : 0}%</div>
-              </div>
-              <div class="metric-item">
-                <div class="metric-label">REST RATIO</div>
-                <div class="metric-value">1:4</div>
-              </div>
-            </div>
-          </div>
-
-          ${activeSchedule && activeSchedule.status === 'draft' ? `
-          <button class="btn btn-primary btn-full animate-in stagger-6" id="btn-finalize">
-            ✅ Finalize This Schedule
-          </button>` : ''}
+          ${activeSchedule ? renderTodayView(activeSchedule, today, state.user?.preferences) : renderEmptySchedule()}
         </div>
       </div>
     </div>
@@ -143,9 +90,9 @@ export async function renderSchedule(container, state) {
       const viewContainer = $('#schedule-view');
       if (!activeSchedule) return;
       if (view === 'today') {
-        viewContainer.innerHTML = renderTodayView(activeSchedule, today);
+        viewContainer.innerHTML = renderTodayView(activeSchedule, today, state.user?.preferences);
       } else if (view === 'week') {
-        viewContainer.innerHTML = renderWeekView(activeSchedule);
+        viewContainer.innerHTML = renderWeekView(activeSchedule, state.user?.preferences);
       } else {
         viewContainer.innerHTML = renderMonthView(activeSchedule, today);
       }
@@ -161,9 +108,9 @@ export async function renderSchedule(container, state) {
       const activeTab = document.querySelector('#view-tabs .schedule-view-tab.active');
       const currentView = activeTab?.dataset.view || 'today';
       if (currentView === 'week') {
-        viewContainer.innerHTML = renderWeekView(activeSchedule);
+        viewContainer.innerHTML = renderWeekView(activeSchedule, state.user?.preferences);
       } else {
-        viewContainer.innerHTML = renderTodayView(activeSchedule, today);
+        viewContainer.innerHTML = renderTodayView(activeSchedule, today, state.user?.preferences);
       }
     } catch (err) {
       showToast(err.message, 'error');
@@ -194,15 +141,142 @@ export async function renderSchedule(container, state) {
   });
 
   // ── Break Timer ──
-  $('#btn-start-break')?.addEventListener('click', () => {
-    showToast('Break timer started! Take a 10-minute break. 🧘', 'info');
+  // ── Manual Editing ──
+  container.addEventListener('click', async (e) => {
+    // Delete Slot
+    const deleteBtn = e.target.closest('.slot-delete-btn');
+    if (deleteBtn && activeSchedule) {
+      e.stopPropagation();
+      const slotIndex = parseInt(deleteBtn.dataset.index);
+      if (!confirm('Remove this session from your schedule?')) return;
+      
+      activeSchedule.slots.splice(slotIndex, 1);
+      try {
+        await api.schedules.update(activeSchedule._id, { slots: activeSchedule.slots });
+        showToast('Session removed', 'success');
+        const viewContainer = $('#schedule-view');
+        const activeTab = document.querySelector('#view-tabs .schedule-view-tab.active');
+        if (activeTab?.dataset.view === 'week') {
+          viewContainer.innerHTML = renderWeekView(activeSchedule);
+        } else {
+          viewContainer.innerHTML = renderTodayView(activeSchedule, today);
+        }
+      } catch (err) {
+        showToast(err.message, 'error');
+      }
+      return;
+    }
+
+    // Add Slot
+    const cell = e.target.closest('.timetable-cell');
+    if (cell && activeSchedule) {
+      // Don't trigger if clicking an existing slot inside the cell
+      if (e.target.closest('.timetable-slot')) return;
+      
+      const day = cell.dataset.day;
+      const hour = parseInt(cell.dataset.hour);
+      openAddSlotModal(activeSchedule, day, hour, () => {
+        const viewContainer = $('#schedule-view');
+        viewContainer.innerHTML = renderWeekView(activeSchedule);
+      });
+    }
   });
+}
+
+/**
+ * Modal to manually add a session
+ */
+async function openAddSlotModal(schedule, day, hour, onSuccess) {
+  try {
+    const data = await api.courses.getAll();
+    const courses = data.courses || [];
+    
+    if (courses.length === 0) {
+      showToast('No subjects found. Please add subjects first.', 'error');
+      return;
+    }
+
+    const modalHTML = `
+      <div class="modal-card">
+        <div class="modal-header">
+          <h2>Add Session</h2>
+          <p>Placing on ${capitalize(day)} at ${formatTime(hour + ':00')}</p>
+        </div>
+        <div class="form-group" style="margin-top:var(--space-md);">
+          <label>Subject Name</label>
+          <input type="text" id="manual-course-input" class="form-control" placeholder="e.g. Mathematics, Gym, Project Work..." />
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Duration (mins)</label>
+            <select id="manual-duration" class="form-control">
+              <option value="60" selected>60 mins</option>
+              <option value="90">90 mins</option>
+              <option value="120">120 mins</option>
+              <option value="150">150 mins</option>
+              <option value="180">180 mins</option>
+            </select>
+          </div>
+        </div>
+        <div class="modal-actions" style="margin-top:var(--space-lg); display:flex; gap:var(--space-sm);">
+          <button class="btn btn-primary" id="btn-confirm-add" style="flex:1;">Add to Schedule</button>
+          <button class="btn btn-ghost" onclick="document.getElementById('modal-overlay').style.display='none'">Cancel</button>
+        </div>
+      </div>
+    `;
+
+    import('../utils.js').then(utils => {
+      utils.showModal(modalHTML);
+      
+      $('#btn-confirm-add').onclick = async () => {
+        const courseName = $('#manual-course-input').value.trim();
+        if (!courseName) {
+          showToast('Please enter a subject name', 'error');
+          return;
+        }
+        
+        const duration = parseInt($('#manual-duration').value);
+        const startMinutes = hour * 60;
+        const endMinutes = startMinutes + duration;
+        
+        // Find existing course if name matches for color consistency, else default color
+        const existingCourse = courses.find(c => c.name.toLowerCase() === courseName.toLowerCase());
+        const color = existingCourse ? existingCourse.color : '#7C3AED';
+
+        const newSlot = {
+          courseName,
+          courseCode: existingCourse ? existingCourse.code : 'MANUAL',
+          color,
+          day,
+          startTime: `${String(hour).padStart(2, '0')}:00`,
+          endTime: `${String(Math.floor(endMinutes/60)).padStart(2, '0')}:${String(endMinutes%60).padStart(2, '0')}`,
+          startMinutes,
+          endMinutes
+        };
+
+        schedule.slots.push(newSlot);
+        
+        try {
+          await api.schedules.update(schedule._id, { slots: schedule.slots });
+          showToast('Session added manually!', 'success');
+          utils.hideModal();
+          onSuccess();
+        } catch (err) {
+          showToast(err.message, 'error');
+        }
+      };
+    });
+  } catch (err) {
+    showToast(err.message, 'error');
+  }
 }
 
 /**
  * Render today's schedule as a vertical timeline
  */
-function renderTodayView(schedule, today) {
+function renderTodayView(schedule, today, preferences = {}) {
+  const wakeHour = parseInt((preferences.wakeTime || '07:00').split(':')[0]);
+  const sleepHour = parseInt((preferences.sleepTime || '22:00').split(':')[0]);
   const todayDay = ['sunday', 'monday', 'tuesday', 'wednesday', 'thursday', 'friday', 'saturday'][today.getDay()];
 
   const todaySlots = (schedule.slots || [])
@@ -288,7 +362,9 @@ function renderTimelineSlots(slots) {
 /**
  * Render week grid view
  */
-function renderWeekView(schedule) {
+function renderWeekView(schedule, preferences = {}) {
+  const wakeHour = parseInt((preferences.wakeTime || '07:00').split(':')[0]);
+  const sleepHour = parseInt((preferences.sleepTime || '22:00').split(':')[0]);
   const slots = schedule.slots || [];
 
   // Build time grid from 7:00 to 20:00
@@ -304,7 +380,7 @@ function renderWeekView(schedule) {
   });
 
   // Time rows (each row = 1 hour)
-  for (let hour = 7; hour <= 20; hour++) {
+  for (let hour = wakeHour; hour <= sleepHour; hour++) {
     const timeStr = `${String(hour).padStart(2, '0')}:00`;
     html += `<div class="timetable-time">${formatTime(timeStr)}</div>`;
 
@@ -329,6 +405,7 @@ function renderWeekView(schedule) {
             border-color: ${slot.color};
             color: ${slot.color};
           ">
+            <button class="slot-delete-btn" data-index="${slots.indexOf(slot)}" title="Remove session">×</button>
             <div class="slot-name">${slot.courseName}</div>
             <div class="slot-code">${slot.courseCode}</div>
             <div class="slot-time">${formatTime(slot.startTime)} - ${formatTime(slot.endTime)}</div>

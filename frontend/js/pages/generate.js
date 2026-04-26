@@ -144,10 +144,6 @@ export async function renderGenerate(container, state) {
                 <input type="checkbox" id="pref-evenings" ${prefs.eveningsOnly ? 'checked' : ''} />
                 <span>Evenings only (after 5:00 PM)</span>
               </label>
-              <label class="checkbox-group">
-                <input type="checkbox" id="pref-free-friday" ${prefs.freeFridays ? 'checked' : ''} />
-                <span>Keep Fridays free</span>
-              </label>
               <div class="form-row" style="margin-top: var(--space-sm);">
                 <div class="form-group">
                   <label>Schedule Intensity</label>
@@ -235,20 +231,84 @@ export async function renderGenerate(container, state) {
   $('#btn-hero-add')?.addEventListener('click', () => openCourseModal(null, courses, container, state));
 
   // ── Event: Add Exam ──
-  $('#btn-add-exam')?.addEventListener('click', () => {
-    const exams = JSON.parse(localStorage.getItem('st_exams') || '[]');
-    const name = prompt('Exam subject name:');
-    if (!name) return;
-    const date = prompt('Exam date (YYYY-MM-DD):');
-    if (!date) return;
-    exams.push({ id: Date.now(), name, date, type: 'Mid-term Assessment' });
-    localStorage.setItem('st_exams', JSON.stringify(exams));
-    renderExams();
-    showToast('Exam date added!', 'success');
-  });
+  $('#btn-add-exam')?.addEventListener('click', () => openExamModal(courses));
 
   // ── Event: Generate Schedule ──
   $('#btn-generate')?.addEventListener('click', () => generateSchedule(state));
+}
+
+/**
+ * Open modal to add an exam date
+ */
+function openExamModal(courses) {
+  const courseOptions = courses.map(c => `<option value="${c.name}">${c.name} (${c.code})</option>`).join('');
+
+  showModal(`
+    <div class="modal-card-header">
+      <h2 style="margin-bottom: var(--space-xs);">📅 Add Exam Date</h2>
+      <p style="color: var(--text-secondary); font-size: 0.9rem; margin-bottom: var(--space-lg);">Track your deadlines and optimize study time.</p>
+    </div>
+    <form id="exam-form">
+      <div class="form-group">
+        <label for="exam-course">Select Subject</label>
+        <select id="exam-course" required>
+          <option value="">-- Choose a subject --</option>
+          ${courseOptions}
+          <option value="other">Other / General</option>
+        </select>
+      </div>
+      <div id="other-subject-group" class="form-group" style="display: none;">
+        <label for="exam-name">Subject Name</label>
+        <input type="text" id="exam-name" placeholder="Enter subject name" />
+      </div>
+      <div class="form-group">
+        <label for="exam-date">Exam Date</label>
+        <input type="date" id="exam-date" required min="${new Date().toISOString().split('T')[0]}" />
+      </div>
+      <div class="form-group">
+        <label for="exam-type">Assessment Type</label>
+        <select id="exam-type">
+          <option value="Final Examination">Final Examination</option>
+          <option value="Mid-term Assessment">Mid-term Assessment</option>
+          <option value="Practical Quiz">Practical Quiz</option>
+          <option value="Assignment Deadline">Assignment Deadline</option>
+        </select>
+      </div>
+      <div style="display:flex;gap:var(--space-md);margin-top:var(--space-lg);">
+        <button type="submit" class="btn btn-primary btn-full">Save Exam Date</button>
+        <button type="button" class="btn btn-ghost" onclick="hideModal()">Cancel</button>
+      </div>
+    </form>
+  `);
+
+  const courseSelect = $('#exam-course');
+  const otherGroup = $('#other-subject-group');
+  const otherInput = $('#exam-name');
+
+  courseSelect.addEventListener('change', () => {
+    if (courseSelect.value === 'other') {
+      otherGroup.style.display = 'block';
+      otherInput.required = true;
+    } else {
+      otherGroup.style.display = 'none';
+      otherInput.required = false;
+    }
+  });
+
+  $('#exam-form').addEventListener('submit', (e) => {
+    e.preventDefault();
+    const exams = JSON.parse(localStorage.getItem('st_exams') || '[]');
+    const name = courseSelect.value === 'other' ? otherInput.value : courseSelect.value;
+    const date = $('#exam-date').value;
+    const type = $('#exam-type').value;
+
+    exams.push({ id: Date.now(), name, date, type });
+    localStorage.setItem('st_exams', JSON.stringify(exams));
+    
+    renderExams();
+    hideModal();
+    showToast('Exam date added!', 'success');
+  });
 }
 
 /**
@@ -490,7 +550,6 @@ async function generateSchedule(state) {
     const preferences = {
       noMorningClasses: $('#pref-no-morning')?.checked || false,
       eveningsOnly: $('#pref-evenings')?.checked || false,
-      freeFridays: $('#pref-free-friday')?.checked || false,
       scheduleIntensity: $('#pref-intensity')?.value || 'balanced',
       breakDuration: parseInt($('#pref-break')?.value || '45'),
       isBusyDuringDay: $('#pref-busy')?.checked || false,

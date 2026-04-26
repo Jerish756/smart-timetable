@@ -16,7 +16,6 @@ import { $, $$, showToast, getInitials, debounce } from './utils.js';
 import { renderDashboard } from './pages/dashboard.js';
 import { renderGenerate } from './pages/generate.js';
 import { renderSchedule } from './pages/schedule.js';
-import { renderAnalytics } from './pages/analytics.js';
 import { renderSettings } from './pages/settings.js';
 
 /**
@@ -57,7 +56,6 @@ const PAGE_RENDERERS = {
   dashboard: renderDashboard,
   generate: renderGenerate,
   schedule: renderSchedule,
-  analytics: renderAnalytics,
   settings: renderSettings,
 };
 

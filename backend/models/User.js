@@ -30,13 +30,14 @@ const userSchema = new mongoose.Schema({
   preferences: {
     noMorningClasses: { type: Boolean, default: false },
     eveningsOnly: { type: Boolean, default: false },
-    freeFridays: { type: Boolean, default: false },
     scheduleIntensity: {
       type: String,
       enum: ['balanced', 'compressed', 'distributed'],
       default: 'balanced'
     },
     breakDuration: { type: Number, default: 45, min: 15, max: 120 },
+    wakeTime: { type: String, default: '07:00' },
+    sleepTime: { type: String, default: '22:00' },
     darkMode: { type: Boolean, default: false }
   },
   createdAt: {

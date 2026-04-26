@@ -10,15 +10,15 @@
   <meta name="keywords" content="timetable, schedule, student, AI, smart, generator" />
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap"
-    rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800;900&family=Sora:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
   <link rel="stylesheet" href="css/main.css" />
   <link rel="stylesheet" href="css/components.css" />
   <link rel="stylesheet" href="css/pages.css" />
   <link rel="stylesheet" href="css/responsive.css" />
+  <link rel="stylesheet" href="css/landing.css" />
   <script>
-    // Point this to your Render Backend URL
-    window.__API_BASE__ = "https://smart-timetable-3j6t.onrender.com/api";
+    // Point this to your local backend
+    window.__API_BASE__ = "http://localhost:5000/api";
   </script>
 
 </head>
@@ -31,13 +31,13 @@
       <div class="sidebar-brand">
         <div class="brand-icon">
           <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
-            <path d="M14 2L2 8l12 6 12-6-12-6z" fill="url(#grad1)" />
-            <path d="M2 20l12 6 12-6" stroke="url(#grad1)" stroke-width="2" fill="none" />
-            <path d="M2 14l12 6 12-6" stroke="url(#grad1)" stroke-width="2" fill="none" />
+            <path d="M14 2L26 8L14 14L2 8L14 2Z" fill="url(#gradLogoSidebar)" />
+            <path d="M2 14L14 20L26 14" stroke="url(#gradLogoSidebar)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M2 20L14 26L26 20" stroke="url(#gradLogoSidebar)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
             <defs>
-              <linearGradient id="grad1" x1="0" y1="0" x2="28" y2="28">
-                <stop stop-color="#7C3AED" />
-                <stop offset="1" stop-color="#3B82F6" />
+              <linearGradient id="gradLogoSidebar" x1="0" y1="0" x2="28" y2="28">
+                <stop stop-color="#8B5CF6" />
+                <stop offset="1" stop-color="#6366F1" />
               </linearGradient>
             </defs>
           </svg>
@@ -48,10 +48,6 @@
         </div>
       </div>
 
-      <button id="btn-new-session" class="sidebar-cta">
-        <span class="cta-icon">+</span>
-        New Study Session
-      </button>
 
       <nav class="sidebar-nav">
         <a href="#" class="nav-item active" data-page="dashboard" id="nav-dashboard">
@@ -77,12 +73,6 @@
             <line x1="3" y1="10" x2="21" y2="10" />
           </svg>
           <span>My Schedule</span>
-        </a>
-        <a href="#" class="nav-item" data-page="analytics" id="nav-analytics">
-          <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-            <polyline points="22,12 18,12 15,21 9,3 6,12 2,12" />
-          </svg>
-          <span>Analytics</span>
         </a>
         <a href="#" class="nav-item" data-page="settings" id="nav-settings">
           <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
@@ -129,7 +119,6 @@
           <a href="#" class="topbar-link active" data-page="dashboard">Dashboard</a>
           <a href="#" class="topbar-link" data-page="generate">Generate</a>
           <a href="#" class="topbar-link" data-page="schedule">My Schedule</a>
-          <a href="#" class="topbar-link" data-page="analytics">Analytics</a>
           <a href="#" class="topbar-link" data-page="settings">Settings</a>
         </nav>
         <div class="topbar-actions">
@@ -177,51 +166,61 @@
   </div>
 
   <!-- ═══ Landing Page (Shown first when not logged in) ═══ -->
-  <div id="landing-page" class="home-page"
-    style="display: none; padding: 40px; max-width: 1200px; margin: 0 auto; height: 100vh; overflow-y: auto;">
-    <div class="hero-section animate-in stagger-1">
-      <div class="hero-badge">⚡ INTELLECTUAL FLOW</div>
-      <h1 class="hero-title">Plan around your real day.</h1>
-      <p class="hero-description">SmartTable AI syncs with your life to find the perfect intellectual flow states for
-        your growth. Experience the future of automated, conflict-free scheduling.</p>
-      <div class="hero-actions">
-        <button id="btn-landing-start" class="btn btn-primary btn-lg">Get Started</button>
-        <button id="btn-landing-login" class="btn btn-outline btn-lg"
-          style="border: 1px solid var(--border-primary); color: var(--text-primary); background: var(--bg-card);">Log
-          In</button>
-      </div>
-    </div>
-
-    <div class="features-section animate-in stagger-2">
-      <h2 class="features-title">Intelligent Scheduling</h2>
-      <p class="features-subtitle">Let the algorithm find the best time for your focus.</p>
-      <div class="features-grid">
-        <div class="feature-card">
-          <div class="feature-icon">🧠</div>
-          <h3>AI-Powered Optimization</h3>
-          <p>Our constraint-satisfaction algorithm ensures you get the optimal study schedule without any conflicts.</p>
+  <div id="landing-page" class="landing-page" style="display: none;">
+    <header class="landing-header">
+      <div class="logo">
+        <div class="logo-icon">
+          <svg width="24" height="24" viewBox="0 0 28 28" fill="none">
+            <path d="M14 2L26 8L14 14L2 8L14 2Z" fill="url(#gradLogoLanding)" />
+            <path d="M2 14L14 20L26 14" stroke="url(#gradLogoLanding)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+            <path d="M2 20L14 26L26 20" stroke="url(#gradLogoLanding)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+            <defs><linearGradient id="gradLogoLanding" x1="0" y1="0" x2="28" y2="28"><stop stop-color="#8B5CF6" /><stop offset="1" stop-color="#6366F1" /></linearGradient></defs>
+          </svg>
         </div>
+        <span class="logo-text">SmartTable AI</span>
+      </div>
+      <button class="btn btn-secondary" id="btn-landing-login">Login</button>
+    </header>
+
+    <div class="landing-content">
+      <section class="hero-section animate-in">
+        <h1 class="hero-title">Academic Flow,<br><span class="text-gradient">Accelerated.</span></h1>
+        <p class="hero-subtitle">
+          Master your focus with SmartTable AI. A refined environment designed for high-achievers to manage academic tasks with surgical precision.
+        </p>
+        <button class="btn btn-primary btn-lg" id="btn-landing-start">Get Started</button>
+      </section>
+
+      <section class="features-grid animate-in stagger-1">
         <div class="feature-card">
-          <div class="feature-badge">NEW</div>
           <div class="feature-icon">⚡</div>
-          <h3>Smart Flow States</h3>
-          <p>Align study sessions with your natural energy peaks, whether you're an early bird or a night owl.</p>
+          <h3>AI Timetable Engine</h3>
+          <p>Intelligent algorithms that analyze your courses to generate conflict-free, optimized study blocks tailored to your cognitive load.</p>
         </div>
         <div class="feature-card">
-          <div class="feature-icon">☕</div>
-          <h3>Active Break Integration</h3>
-          <p>Scientifically-backed break durations are automatically scheduled to keep your mind sharp.</p>
+          <div class="feature-icon">📅</div>
+          <h3>Full 7-Day Precision</h3>
+          <p>Plan your entire week including weekends. Manually add or remove sessions with a single click to maintain total control over your flow.</p>
         </div>
-      </div>
+        <div class="feature-card">
+          <div class="feature-icon">🔄</div>
+          <h3>Intelligent Sync</h3>
+          <p>Syncs perfectly with your real life. Automatically avoids work/school hours and respects your personal wake and sleep cycles.</p>
+        </div>
+      </section>
     </div>
 
-    <div class="cta-section animate-in stagger-3">
-      <h2>Ready to optimize your time?</h2>
-      <div class="cta-buttons">
-        <button id="btn-landing-join" class="btn btn-white btn-lg">Join 10,000+ Students</button>
+    <footer class="landing-footer">
+      <div class="footer-left">
+        <span class="logo-text">SmartTable AI</span>
       </div>
-      <div class="cta-sub">No credit card required</div>
-    </div>
+      <div class="footer-links">
+        <a href="#">Privacy</a>
+        <a href="#">Terms</a>
+        <a href="#">Contact</a>
+      </div>
+      <div class="footer-copy">© 2026 SmartTable AI. All rights reserved.</div>
+    </footer>
   </div>
 
   <!-- ═══ Auth Page (Shown when not logged in) ═══ -->
@@ -231,13 +230,13 @@
         <div class="auth-branding">
           <div class="auth-logo">
             <svg width="40" height="40" viewBox="0 0 28 28" fill="none">
-              <path d="M14 2L2 8l12 6 12-6-12-6z" fill="url(#grad2)" />
-              <path d="M2 20l12 6 12-6" stroke="url(#grad2)" stroke-width="2" fill="none" />
-              <path d="M2 14l12 6 12-6" stroke="url(#grad2)" stroke-width="2" fill="none" />
+              <path d="M14 2L26 8L14 14L2 8L14 2Z" fill="url(#gradLogoAuth)" />
+              <path d="M2 14L14 20L26 14" stroke="url(#gradLogoAuth)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
+              <path d="M2 20L14 26L26 20" stroke="url(#gradLogoAuth)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" />
               <defs>
-                <linearGradient id="grad2" x1="0" y1="0" x2="28" y2="28">
-                  <stop stop-color="#7C3AED" />
-                  <stop offset="1" stop-color="#3B82F6" />
+                <linearGradient id="gradLogoAuth" x1="0" y1="0" x2="28" y2="28">
+                  <stop stop-color="#8B5CF6" />
+                  <stop offset="1" stop-color="#6366F1" />
                 </linearGradient>
               </defs>
             </svg>
@@ -300,7 +299,7 @@
             <p class="auth-subtitle">Join SmartTable AI and start optimizing your schedule</p>
             <div class="form-group">
               <label for="register-name">Full Name</label>
-              <input type="text" id="register-name" placeholder="Jerish" required />
+              <input type="text" id="register-name" placeholder="Username" required />
             </div>
             <div class="form-group">
               <label for="register-email">Email Address</label>

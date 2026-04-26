@@ -167,6 +167,28 @@ export async function renderDashboard(container, state) {
     const statSubjects = $('#stat-subjects');
     if (statSubjects) statSubjects.textContent = `(${subjectCount})`;
 
+    // Next Exam
+    const exams = JSON.parse(localStorage.getItem('st_exams') || '[]');
+    const upcomingExams = exams
+      .filter(e => new Date(e.date) >= new Date().setHours(0, 0, 0, 0))
+      .sort((a, b) => new Date(a.date) - new Date(b.date));
+
+    const nextExamEl = $('#stat-next-exam');
+    if (nextExamEl) {
+      if (upcomingExams.length > 0) {
+        const next = upcomingExams[0];
+        const examDate = new Date(next.date);
+        nextExamEl.innerHTML = `
+          <div style="font-weight: 800; font-size: 1.1rem; line-height: 1.2;">${next.name}</div>
+          <div style="font-size: 0.7rem; color: var(--text-tertiary); text-transform: uppercase; letter-spacing: 0.5px; margin-top: 4px;">
+            ${examDate.toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
+          </div>
+        `;
+      } else {
+        nextExamEl.textContent = '—';
+      }
+    }
+
     // Focus days (simulated based on account age)
     const createdAt = new Date(user?.createdAt || Date.now());
     const daysSinceCreation = Math.max(1, Math.floor((Date.now() - createdAt.getTime()) / 86400000));

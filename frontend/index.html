@@ -17,8 +17,9 @@
   <link rel="stylesheet" href="css/responsive.css" />
   <link rel="stylesheet" href="css/landing.css" />
   <script>
-    // Point this to your local backend
-    window.__API_BASE__ = "http://localhost:5000/api";
+    // Point to the Render backend when in production
+    const isLocal = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1';
+    window.__API_BASE__ = isLocal ? "http://localhost:5000/api" : "https://smart-timetable-3j6t.onrender.com/api";
   </script>
 
 </head>
